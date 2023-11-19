@@ -1,0 +1,10 @@
+name: napari-snakes
+display_name: Snakes
+contributions:
+  commands:
+    - id: napari-snakes.propagate
+      title: Snakes
+      python_name: napari_snakes:SnakesWidget
+  widgets:
+    - command: napari-snakes.propagate
+      display_name: Snakes
