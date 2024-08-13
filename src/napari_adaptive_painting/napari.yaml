@@ -1,0 +1,10 @@
+name: napari-adaptive-painting
+display_name: Adaptive painting
+contributions:
+  commands:
+    - id: napari-adaptive-painting.propagate
+      title: Adaptive painting
+      python_name: napari_adaptive_painting:LabelPropagatorWidget
+  widgets:
+    - command: napari-adaptive-painting.propagate
+      display_name: Adaptive painting
