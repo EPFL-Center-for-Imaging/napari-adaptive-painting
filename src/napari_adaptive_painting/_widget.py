@@ -14,6 +14,7 @@ from qtpy.QtWidgets import (
 import numpy as np
 import scipy.ndimage as ndi
 from skimage.filters import gaussian
+from skimage.morphology import isotropic_dilation
 
 
 def keep_biggest_object(lab_int: np.ndarray) -> np.ndarray:
@@ -158,7 +159,11 @@ class LabelPropagatorWidget(QWidget):
         self.cb_labels.clear()
         for x in self.viewer.layers:
             if isinstance(x, napari.layers.Labels):
-                self.cb_labels.addItem(x.name, x.data)
+                if x.data.ndim == 3:
+                    self.cb_labels.addItem(x.name, x.data)
+        
+        if self.cb_labels.currentText() == "":
+            self._handle_inactive()
 
     def _set_button_text(self):
         text = "Stop" if self.is_active else "Start"
@@ -254,11 +259,7 @@ class LabelPropagatorWidget(QWidget):
             self.image_data_slice, sigma=gaussian_sigma, preserve_range=True
         )
         new_mask = (
-            ndi.binary_dilation(
-                mask,
-                structure=ndi.generate_binary_structure(2, 1),
-                iterations=n_iterations_dilation,
-            )
+            isotropic_dilation(mask, radius=2)
             & (smoothed_image_data_slice <= max_intensity)
             & (smoothed_image_data_slice >= min_intensity)
         )
@@ -270,15 +271,3 @@ class LabelPropagatorWidget(QWidget):
             new_mask
         ] = self.selected_label
         self.labels_layer.refresh()
-
-
-if __name__ == "__main__":
-    import tifffile
-
-    viewer = napari.Viewer()
-    viewer.window.add_dock_widget(LabelPropagatorWidget(viewer))
-    viewer.add_image(tifffile.imread("/home/wittwer/data/amaia/1493.tif"))
-    viewer.add_labels(
-        tifffile.imread("/home/wittwer/data/amaia/1493-init-labels.tif")
-    )
-    napari.run()
