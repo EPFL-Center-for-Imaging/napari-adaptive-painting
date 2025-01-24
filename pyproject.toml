@@ -3,7 +3,7 @@ name = "napari-adaptive-painting"
 dynamic = ["version"]
 description = "Propagate label annotations in Napari."
 readme = "README.md"
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [{ name = "Mallory Wittwer", email = "mallory.wittwer@epfl.ch" }]
 
